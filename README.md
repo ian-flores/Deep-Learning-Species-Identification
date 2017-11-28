@@ -1,13 +1,22 @@
 # Species Classification using Deep Learning
+Project developed by Ian Flores, Alejandro Vega and Dr. Carlos Corrada.
 
-## ARBIMON Project
+### ARBIMON Project
+As extracted from the ARBIMON Project Goal:
 
-## This Repository
+*"No one questions the importance of the global network of weather stations that help us track climate patterns and predict future change or daily satellite images that help us monitor the extent of the world’s forests, but we have virtually ignored the status of the fauna inside the forests. By monitoring the sounds of birds, frogs, mammals, and insects we can learn a lot about which species are there and how their populations are changing through time. This invaluable information will help to develop conservation strategies to protect and maintain biodiversity in the world’s most unique ecosystems."*
 
-## Dataset
+### This Repository
 
-## Jupyter Notebooks
-1. [01_Generate_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/Notebooks/01_Generate_Dataset.ipynb)
-2. [02_Prepare_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/Notebooks/02_Prepare_Dataset.ipynb)
-3. [03_Neural_Network.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/Notebooks/03_Neural_Network.ipynb)
-4. [04_Convolutional_Neural_Network](https://github.com/ian-flores/Deep-Learning-Species-Identification/Notebboks/04_Convolutional_Neural_Network.ipynb)
+This Repository contains the Jupyter Notebooks developed for this research project. This Repository will continue to be updated almost weekly as the project develops further.
+### Dataset
+
+We have been working with the dataset found here: https://figshare.com/articles/Code_recordings_validations_and_Regions_of_interest/4488149/1
+
+Given certain limitations uploading the documents, the dataset is not part of the Repository but is freely available in the above link.
+
+### Jupyter Notebooks
+1. [01_Generate_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/01_Generate_Dataset.ipynb)
+2. [02_Prepare_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/02_Prepare_Dataset.ipynb)
+3. [03_Neural_Network.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/03_Neural_Network.ipynb)
+4. [04_Convolutional_Neural_Network](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Noteboks/04_Convolutional_Neural_Network.ipynb)
