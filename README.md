@@ -19,4 +19,5 @@ Given certain limitations uploading the documents, the dataset is not part of th
 1. [01_Generate_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/01_Generate_Dataset.ipynb)
 2. [02_Prepare_Dataset.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/02_Prepare_Dataset.ipynb)
 3. [03_Neural_Network.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/03_Neural_Network.ipynb)
-4. [04_Convolutional_Neural_Network](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Noteboks/04_Convolutional_Neural_Network.ipynb)
+4. [VGGNet](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/VGGNet.ipynb)
+This is an implementation from the paper: "Very deep convolutional networks for large-scale image recognition"
