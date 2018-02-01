@@ -21,3 +21,9 @@ Given certain limitations uploading the documents, the dataset is not part of th
 3. [03_Neural_Network.ipynb](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/03_Neural_Network.ipynb)
 4. [VGGNet](https://github.com/ian-flores/Deep-Learning-Species-Identification/blob/master/Notebooks/VGGNet.ipynb)
 This is an implementation from the paper: "Very deep convolutional networks for large-scale image recognition"
+
+### Python Scripts
+We are working on implementing the Jupyter Notebooks as Python Scripts that can be easily implemented as a pipeline. 
+
+### Literature
+Most of the literature we have used in this project is available in a Google Drive folder. (https://drive.google.com/drive/folders/13wuv4q0h0cGagmRaC7hCyuiyLhjytxca?usp=sharing)
