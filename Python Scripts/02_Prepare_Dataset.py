@@ -18,7 +18,7 @@ from PIL import Image, ImageOps
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import display as disp
-from IPython.display import Image as Im 
+from IPython.display import Image as Im
 from scipy import ndimage
 import random
 import sys
@@ -30,7 +30,7 @@ import sys
 size = 28
 image_size = size
 
-## Shifts 
+## Shifts
 num_shifts = int(sys.argv[2])
 
 ## Number of imgs per class
@@ -42,13 +42,13 @@ min_augmentation = 20
 
 # ### Cropping Spectrograms
 
-# Given the architectures we are using in our models, we want all spectrograms to have the same size, because the models don't allow for dynamic size input. 
+# Given the architectures we are using in our models, we want all spectrograms to have the same size, because the models don't allow for dynamic size input.
 
 # In[48]:
 
 
 def squareAndGrayImage(image, size, path, species, name):
-    # open our image and convert to grayscale 
+    # open our image and convert to grayscale
     # (needed since color channels add a third dimmension)
     im = Image.open(image).convert('L')
     # dimmensions of square image
@@ -57,7 +57,7 @@ def squareAndGrayImage(image, size, path, species, name):
     squared_image = ImageOps.fit(im, size, Image.ANTIALIAS)
     squared_image.save(path + '/' + species + '/squared_' + name)
     #print(ndimage.imread(path + '/' + species + '/squared_' + name).shape)
-    
+
 def squareAndGrayProcess(size, dataset_path, new_dataset_path):
     # if our dataset doesn't exist create it, otherwise overwrite
     if not os.path.exists(new_dataset_path):
@@ -65,10 +65,10 @@ def squareAndGrayProcess(size, dataset_path, new_dataset_path):
     else:
         shutil.rmtree(new_dataset_path)
         os.makedirs(new_dataset_path)
-    
+
     # get a list of species folders in our dataset
     species_dataset = os.listdir(dataset_path)
-    
+
     for species in species_dataset:
         os.makedirs(new_dataset_path + '/' + species)
         species_images = os.listdir(dataset_path + '/' + species)
@@ -83,14 +83,18 @@ squareAndGrayProcess(size, dataset_path, new_dataset_path)
 
 # In[49]:
 
-
-os.mkdir("../dataset/augmented_spectrograms")
+if not os.path.exists("../dataset/augmented_spectrograms"):
+    os.makedirs("../dataset/augmented_spectrograms")
+else:
+    shutil.rmtree("../dataset/augmented_spectrograms")
+    os.makedirs("../dataset/augmented_spectrograms")
+#os.mkdir("../dataset/augmented_spectrograms")
 
 
 # In[23]:
 
 
-from scipy.ndimage.interpolation import shift 
+from scipy.ndimage.interpolation import shift
 ## Have to find a way to create and copy the old directory #########
 
 #To shift UP up to num_shifts pixels
@@ -238,13 +242,13 @@ def load_image(folder, min_num_images):
 
 
 def maybe_pickle(data_folders, min_num_images_per_class, pickles_path, force=False):
-    
+
     if not os.path.exists(pickles_path):
         os.makedirs(pickles_path)
     else:
         shutil.rmtree(pickles_path)
         os.makedirs(pickles_path)
-  
+
     dataset_names = []
     for folder in data_folders:
         class_name = folder.split('/')[-1] # species name
@@ -282,9 +286,9 @@ num_classes = len(pickles)
 print(f'We have {num_classes} classes')
 
 
-# ### Classes 
+# ### Classes
 
-# We have to evaluate the number of classes and how are they distributed. Also, observe which species has a higher frequency, etc.  
+# We have to evaluate the number of classes and how are they distributed. Also, observe which species has a higher frequency, etc.
 
 # In[35]:
 
@@ -303,7 +307,7 @@ def class_is_balanced(pickles):
         total += len(pickle_class)
     print("For the dataset to be balanced, each class should have approximately %d images.\n" % (total / len(pickles)))
     return (total // len(pickles))
-    
+
 print("Let's see if the dataset is balanced:")
 balance_num = class_is_balanced(pickles)
 
@@ -347,7 +351,7 @@ def getLargestClass(pickles):
         if(len(pickle_class) > num_images):
             num_images = len(pickle_class)
             class_info = [index, class_name, num_images]
-            
+
     print("Largest dataset is {} with {} images".format(class_info[1], class_info[2]))
     return class_info
 
@@ -363,7 +367,7 @@ def findMinClass(dataset_path):
     for folder in dataset_folders:
         images= os.listdir(folder)
         count = len(images)
-        if (count < minm): 
+        if (count < minm):
             minm = count
             species = folder.split('/')[-1]
 
@@ -375,17 +379,17 @@ def findMinClass(dataset_path):
 
 # go through our pickles, load them, shuffle them, and choose class_size amount of the images
 def makeSubClasses(class_size, pickle_path, pickle_files):
-    
+
     # create path for folder of pickles of subsets of classes
     if not os.path.exists(pickle_path):
         os.makedirs(pickle_path)
     else:
         shutil.rmtree(pickle_path)
         os.makedirs(pickle_path)
-    
+
     # list of pickles of subsets of classes
     subclasses = []
-    
+
     for pickle_file in pickle_files:
         try:
             with open(pickle_file, 'rb') as f:
@@ -414,7 +418,7 @@ pickle_subclasses = makeSubClasses(min_augmentation, '../dataset/subclasess_pick
 
 # ### Training, Testing, and Validation Separation
 
-# As with every implementation of Supervised Learning, we separate the dataset into three components. The training, the testing, and the validation dataset. 
+# As with every implementation of Supervised Learning, we separate the dataset into three components. The training, the testing, and the validation dataset.
 
 # In[51]:
 
@@ -439,7 +443,7 @@ def make_arrays(nb_rows, img_size):
         dataset, labels = None, None
     return dataset, labels
 
-def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid_size is 0 if not given as argument. 
+def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid_size is 0 if not given as argument.
     num_classes = len(pickle_files)
     valid_dataset, valid_labels = make_arrays(valid_size, image_size)
     train_dataset, train_labels = make_arrays(train_size, image_size)
@@ -448,12 +452,12 @@ def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid
     vsize_per_class = valid_size // num_classes
     tsize_per_class = train_size // num_classes
     tesize_per_class = test_size // num_classes
-    
+
     start_v, start_t, start_te = 0, 0, 0
     end_v, end_t, end_te= vsize_per_class, tsize_per_class, tesize_per_class
     end_l = vsize_per_class + tsize_per_class
     end_tst = end_l + tesize_per_class
-    
+
 
     for label, pickle_file in enumerate(pickle_files):
         #print(start_v, end_v)
@@ -463,8 +467,8 @@ def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid
             with open(pickle_file, 'rb') as f:
                 species_set = pickle.load(f) # set of images from species
                 # let's shuffle the letters to have random validation and training set
-                np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around 
-                
+                np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around
+
 
                 print("Valid dataset with", name, ". Has ", len(species_set), " images.")
                 print("Needs %d images per class" % vsize_per_class)
@@ -485,10 +489,10 @@ def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid
                 print("train_dataset[%d:%d,:,:] = train_species" % (start_t,end_t))
                 train_dataset[start_t:end_t, :, :] = train_species
                 print("train_labels[%d:%d] = %d" % (start_t,end_t,label))
-                train_labels[start_t:end_t] = label # give label to all images in class    
-                start_t += tsize_per_class # offset start of class for next iteration 
+                train_labels[start_t:end_t] = label # give label to all images in class
+                start_t += tsize_per_class # offset start of class for next iteration
                 end_t += tsize_per_class # offset end of class for next iteration
-                
+
                 print("Test dataset with", name, ". Has ", len(species_set), " images")
                 print("Needs %d images per class" % tesize_per_class)
                 print("test_species is species_set[%d:%d,:,:]" % (end_l, end_te))
@@ -497,13 +501,13 @@ def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid
                 test_dataset[start_te:end_te, :, :] = test_species
                 print("test_labels[%d:%d] = %d" % (start_te,end_te,label))
                 test_labels[start_te:end_te] = label # give label to all images in class
-                start_te += tesize_per_class # offset start of class for next iteration 
+                start_te += tesize_per_class # offset start of class for next iteration
                 end_te += tesize_per_class # offset end of class for next iteration
-                
+
         except Exception as e:
             print('Unable to process data from', pickle_file, ':', e)
             pass
-    
+
     return valid_dataset, valid_labels, train_dataset, train_labels, test_dataset, test_labels
 
 
@@ -520,7 +524,7 @@ valid_dataset, valid_labels, train_dataset, train_labels, test_dataset, test_lab
 
 
 # create dataset when dataset is not balanced, but want to use entire dataset
-def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size is 0 if not given as argument. 
+def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size is 0 if not given as argument.
     num_classes = len(pickle_files)
     valid_dataset, valid_labels = make_arrays(valid_size, image_size)
     train_dataset, train_labels = make_arrays(train_size, image_size)
@@ -542,24 +546,24 @@ def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size 
                 if(len(species_set) < (tsize_per_class + vsize_per_class)):
                     # since our dataset is not balanced we need to make sure
                     # we're not taking more images than we have or dimmensions will not match
-                    # reset our ends to previous state, calculate new images_per_class, and 
+                    # reset our ends to previous state, calculate new images_per_class, and
                     # calculate new ends
-                    
+
                     end_v -= vsize_per_class
-                    end_t -= tsize_per_class 
-                    
+                    end_t -= tsize_per_class
+
                     tsize_per_class = len(species_set) // 2
                     vsize_per_class = len(species_set) // 2
-                    
+
                     end_v += vsize_per_class
                     end_t += tsize_per_class
-                    end_l = vsize_per_class+tsize_per_class 
-                    
-                    
-                    
+                    end_l = vsize_per_class+tsize_per_class
+
+
+
                     # let's shuffle the letters to have random validation and training set
-                    np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around 
-                    if valid_dataset is not None: # if not testing dataset 
+                    np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around
+                    if valid_dataset is not None: # if not testing dataset
 
                         print("Valid dataset with", name, ". Has ", len(species_set), " images.")
                         print("Needs %d images per class" % vsize_per_class)
@@ -569,15 +573,15 @@ def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size 
                         valid_dataset[start_v:end_v, :, :,:] = valid_species
                         print("valid_labels[%d:%d] = %d" % (start_v,end_v,label))
                         valid_labels[start_v:end_v] = label
-                        
+
                         # increment our start by how many images we used for this class
                         start_v += vsize_per_class
                         # assume next class will have the required images_per_class
                         end_v += (valid_size // num_classes)
-                    
-                        # can't reset vsize_per_class here since 
+
+                        # can't reset vsize_per_class here since
                         # the training dataset needs it's current state
-                    
+
                     print("Train dataset with", name, ". Has ", len(species_set), " images")
                     print("Needs %d images per class" % tsize_per_class)
                     print("train_species is species_set[%d:%d,:,:]" % (vsize_per_class,end_l))
@@ -586,27 +590,27 @@ def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size 
                     train_dataset[start_t:end_t, :, :,:] = train_species
                     print("train_labels[%d:%d] = %d" % (start_t,end_t,label))
                     train_labels[start_t:end_t] = label # give label to all images in class
-                    
+
                     # increment our start by how many images we used for this class
-                    start_t += tsize_per_class 
+                    start_t += tsize_per_class
                     # assume next round will have required images_per_class
                     tsize_per_class = train_size // num_classes
                     end_t += tsize_per_class # offset end of class for next iteration
                     vsize_per_class = valid_size // num_classes
                     end_l = vsize_per_class+tsize_per_class
-                    
-                    
+
+
                 else: # we have enough images in this class to use our desired imgs_per_class
-                    
-                    
+
+
                     tsize_per_class = train_size // num_classes
                     vsize_per_class = valid_size // num_classes
                     end_l = vsize_per_class+tsize_per_class
-                    
-                
+
+
                     # let's shuffle the letters to have random validation and training set
-                    np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around 
-                    if valid_dataset is not None: # if not testing dataset 
+                    np.random.shuffle(species_set) # shuffle the data (the "images") in the pickle around
+                    if valid_dataset is not None: # if not testing dataset
 
                         print("Valid dataset with", name, ". Has ", len(species_set), " images.")
                         print("Needs %d images per class" % vsize_per_class)
@@ -628,17 +632,17 @@ def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size 
                     train_dataset[start_t:end_t, :, :,:] = train_species
                     print("train_labels[%d:%d] = %d" % (start_t,end_t,label))
                     train_labels[start_t:end_t] = label # give label to all images in class
-                    
-                    
-                    
-                    start_t += tsize_per_class # offset start of class for next iteration 
+
+
+
+                    start_t += tsize_per_class # offset start of class for next iteration
                     end_t += tsize_per_class # offset end of class for next iteration
 
         except Exception as e:
             print('Unable to process data from', pickle_file, ':', e)
             raise
         print()
-    
+
     return valid_dataset, valid_labels, train_dataset, train_labels
 
 
@@ -675,7 +679,7 @@ label_map = genLabelMap(pickle_subclasses)
 
 # ### Output Data
 
-# We output the data in a pickle format, to be used next on the models. 
+# We output the data in a pickle format, to be used next on the models.
 
 # In[29]:
 
@@ -691,8 +695,8 @@ try:
     'valid_labels': valid_labels,
     'test_dataset': test_dataset,
     'test_labels': test_labels,
-    } 
-  pickle.dump(save, f, pickle.HIGHEST_PROTOCOL) # save all out datasets in one pickle 
+    }
+  pickle.dump(save, f, pickle.HIGHEST_PROTOCOL) # save all out datasets in one pickle
   f.close()
 except Exception as e:
   print('Unable to save data to', pickle_file, ':', e)
