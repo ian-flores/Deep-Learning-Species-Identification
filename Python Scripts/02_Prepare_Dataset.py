@@ -7,9 +7,10 @@
 
 # ### Loading Dependencies
 
-# In[1]:
+# In[46]:
 
-get_ipython().magic('matplotlib inline')
+
+get_ipython().run_line_magic('matplotlib', 'inline')
 from six.moves import cPickle as pickle
 import os
 import shutil
@@ -20,28 +21,31 @@ from IPython.display import display as disp
 from IPython.display import Image as Im 
 from scipy import ndimage
 import random
+import sys
+
+# In[47]:
 
 
-# In[ ]:
-
-## image size 
-image_size, size = 224, 224
+## image size
+size = int(sys.argv[1])
+image_size = size
 
 ## Shifts 
-num_shifts = 7
+num_shifts = int(sys.argv[2])
 
 ## Number of imgs per class
-min_imgs_per_class = 32
+min_imgs_per_class = 1
 
 ## Number of imgs per class after augmentation
-min_augmentation = 56
+min_augmentation = 20
 
 
 # ### Cropping Spectrograms
 
 # Given the architectures we are using in our models, we want all spectrograms to have the same size, because the models don't allow for dynamic size input. 
 
-# In[3]:
+# In[48]:
+
 
 def squareAndGrayImage(image, size, path, species, name):
     # open our image and convert to grayscale 
@@ -77,12 +81,14 @@ new_dataset_path = '../dataset/squared_spectrogram_roi_dataset'
 squareAndGrayProcess(size, dataset_path, new_dataset_path)
 
 
-# In[5]:
+# In[49]:
+
 
 os.mkdir("../dataset/augmented_spectrograms")
 
 
-# In[6]:
+# In[23]:
+
 
 from scipy.ndimage.interpolation import shift 
 ## Have to find a way to create and copy the old directory #########
@@ -101,7 +107,8 @@ for folder in os.listdir(new_dataset_path):
             shifted_image.close()
 
 
-# In[7]:
+# In[24]:
+
 
 #To shift down up to num_shifts pixels
 for folder in os.listdir(new_dataset_path):
@@ -116,7 +123,8 @@ for folder in os.listdir(new_dataset_path):
             shifted_image.close()
 
 
-# In[8]:
+# In[25]:
+
 
 #To shift to the left up to num_shifts pixels
 for folder in os.listdir(new_dataset_path):
@@ -131,14 +139,15 @@ for folder in os.listdir(new_dataset_path):
             shifted_image.close()
 
 
-# In[9]:
+# In[26]:
+
 
 #To shift to the right up to num_shifts pixels
 for folder in os.listdir(new_dataset_path):
     species_pictures = os.listdir(new_dataset_path + '/' + folder)
     for image in species_pictures:
         the_image = np.asarray(Image.open(new_dataset_path + '/' + folder + '/' + image))
-        for i in range(7):
+        for i in range(num_shifts):
             pre_image = the_image.reshape((size,size))
             shifted_image = shift(pre_image, [0, i])
             shifted_image = Image.fromarray(shifted_image)
@@ -146,12 +155,14 @@ for folder in os.listdir(new_dataset_path):
             shifted_image.close()
 
 
-# In[10]:
+# In[27]:
+
 
 new_dataset_path = '../dataset/augmented_spectrograms'
 
 
-# In[11]:
+# In[28]:
+
 
 # Function for displaying a random photo from each class in a dataset
 def displaySamples(dataset_folders):
@@ -166,12 +177,13 @@ def displaySamples(dataset_folders):
         disp(Im(sample)) # display our sample
         print("========================================")
 
-print("Here's a random sample from each class in the training dataset:")
-displaySamples(new_dataset_path)
+#print("Here's a random sample from each class in the training dataset:")
+#displaySamples(new_dataset_path)
 
 
 
-# In[12]:
+# In[29]:
+
 
 def getDatasetFolders(dataset_path):
     folders = os.listdir(dataset_path)
@@ -183,7 +195,8 @@ def getDatasetFolders(dataset_path):
 dataset_folders = getDatasetFolders(new_dataset_path)
 
 
-# In[13]:
+# In[30]:
+
 
 pixel_depth = 255.0 # Number of levels per pixel.
 
@@ -221,7 +234,8 @@ def load_image(folder, min_num_images):
 
 # We want to pickle the data by species, allowing for control of the minimum images per class. Beware that this will drastically influence the performance of your model.
 
-# In[14]:
+# In[33]:
+
 
 def maybe_pickle(data_folders, min_num_images_per_class, pickles_path, force=False):
     
@@ -259,19 +273,21 @@ pickles_path = '../dataset/pickle_data'
 datasets = maybe_pickle(dataset_folders, min_imgs_per_class, pickles_path)
 
 
-# In[1]:
+# In[34]:
+
 
 pickles = getDatasetFolders('../dataset/pickle_data')
-print(datasets)
+#print(datasets)
 num_classes = len(pickles)
-print(f'We have {num_classes} pickles')
+print(f'We have {num_classes} classes')
 
 
 # ### Classes 
 
 # We have to evaluate the number of classes and how are they distributed. Also, observe which species has a higher frequency, etc.  
 
-# In[16]:
+# In[35]:
+
 
 # Calculates the total of images per class
 def class_is_balanced(pickles):
@@ -292,7 +308,8 @@ print("Let's see if the dataset is balanced:")
 balance_num = class_is_balanced(pickles)
 
 
-# In[17]:
+# In[36]:
+
 
 def getBalancedClasses(pickle_files, balanced_num):
     pickle_paths = []
@@ -310,11 +327,12 @@ def getBalancedClasses(pickle_files, balanced_num):
 
 true_pickles, total_balanced = getBalancedClasses(pickles, balance_num)
 
-print("balanced dataset is ", true_pickles)
-print("Total images are ", total_balanced)
+#print("balanced dataset is ", true_pickles)
+print("Total Original Images are ", total_balanced)
 
 
-# In[18]:
+# In[37]:
+
 
 def getLargestClass(pickles):
     num_images = 0
@@ -333,10 +351,11 @@ def getLargestClass(pickles):
     print("Largest dataset is {} with {} images".format(class_info[1], class_info[2]))
     return class_info
 
-class_info = getLargestClass(true_pickles)
+#class_info = getLargestClass(true_pickles)
 
 
-# In[19]:
+# In[38]:
+
 
 def findMinClass(dataset_path):
     minm = float('inf')
@@ -351,13 +370,8 @@ def findMinClass(dataset_path):
     return (species, minm)
 
 
-# In[20]:
+# In[40]:
 
-min_class = findMinClass(true_pickles)
-print(min_class)
-
-
-# In[21]:
 
 # go through our pickles, load them, shuffle them, and choose class_size amount of the images
 def makeSubClasses(class_size, pickle_path, pickle_files):
@@ -392,7 +406,8 @@ def makeSubClasses(class_size, pickle_path, pickle_files):
     return subclasses
 
 
-# In[22]:
+# In[50]:
+
 
 pickle_subclasses = makeSubClasses(min_augmentation, '../dataset/subclasess_pickle_data/', pickles)
 
@@ -401,18 +416,20 @@ pickle_subclasses = makeSubClasses(min_augmentation, '../dataset/subclasess_pick
 
 # As with every implementation of Supervised Learning, we separate the dataset into three components. The training, the testing, and the validation dataset. 
 
-# In[23]:
+# In[51]:
+
 
 # our dataset is now balanced. calculate our training, validation, and test dataset sizes
 total_images = len(pickle_subclasses) * 56
 print("We have a total of {}.".format(total_images))
-print("We'll split them 60/20/20 for training, validation, and testing respectively.")
-print("Training dataset size: {}".format(int(total_images*0.6)))
-print("Validation dataset size: {}".format(int(total_images*0.2)))
-print("Testing dataset size: {}".format(int(total_images*0.2)))
+print("We'll split them 70/15/15 for training, validation, and testing respectively.")
+print("Training dataset size: {}".format(int(total_images*0.70)))
+print("Validation dataset size: {}".format(int(total_images*0.15)))
+print("Testing dataset size: {}".format(int(total_images*0.15)))
 
 
-# In[24]:
+# In[52]:
+
 
 def make_arrays(nb_rows, img_size):
     if nb_rows:
@@ -490,7 +507,8 @@ def merge_datasets_all(pickle_files, train_size, valid_size, test_size): # valid
     return valid_dataset, valid_labels, train_dataset, train_labels, test_dataset, test_labels
 
 
-# In[25]:
+# In[53]:
+
 
 train_size = int(total_images * 0.6)
 valid_size = int(total_images * 0.2)
@@ -498,7 +516,8 @@ test_size = int(total_images * 0.2)
 valid_dataset, valid_labels, train_dataset, train_labels, test_dataset, test_labels = merge_datasets_all(pickle_subclasses, train_size, valid_size, test_size)
 
 
-# In[26]:
+# In[54]:
+
 
 # create dataset when dataset is not balanced, but want to use entire dataset
 def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size is 0 if not given as argument. 
@@ -623,7 +642,8 @@ def merge_datasets_forced(pickle_files, train_size, valid_size=0): # valid_size 
     return valid_dataset, valid_labels, train_dataset, train_labels
 
 
-# In[27]:
+# In[55]:
+
 
 def genLabelMap(pickle_files):
     label_map = {}
@@ -646,10 +666,11 @@ def sampleCheck(dataset, labels, label_map):
         plt.show()
 
 
-# In[28]:
+# In[58]:
+
 
 label_map = genLabelMap(pickle_subclasses)
-sampleCheck(train_dataset, train_labels,label_map)
+#sampleCheck(train_dataset, train_labels,label_map)
 
 
 # ### Output Data
@@ -658,7 +679,8 @@ sampleCheck(train_dataset, train_labels,label_map)
 
 # In[29]:
 
-pickle_file = '../dataset/arbimon_VGG.pickle'
+
+pickle_file = '../dataset/Shifted_Pickles/augmented_shifted_' + str(num_shifts) + '.pickle'
 
 try:
   f = open(pickle_file, 'wb')
@@ -675,4 +697,3 @@ try:
 except Exception as e:
   print('Unable to save data to', pickle_file, ':', e)
   raise
-
