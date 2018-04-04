@@ -10,7 +10,7 @@
 # In[46]:
 
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 from six.moves import cPickle as pickle
 import os
 import shutil
