@@ -27,7 +27,7 @@ import sys
 
 
 ## image size
-size = int(sys.argv[1])
+size = 28
 image_size = size
 
 ## Shifts 
