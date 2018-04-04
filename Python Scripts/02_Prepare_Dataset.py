@@ -31,7 +31,7 @@ size = 28
 image_size = size
 
 ## Shifts
-num_shifts = int(sys.argv[2])
+num_shifts = int(sys.argv[1])
 
 ## Number of imgs per class
 min_imgs_per_class = 1
