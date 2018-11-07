@@ -52,6 +52,47 @@ def linear_augmentation(dataset, num_shifts, labels):
     
     return np.asarray(augmented_dataset), np.asarray(augmented_labels)
 
+### Single Linear Augmentation
+def linear_augmentation_single(dataset, num_shifts, labels):
+    augmented_dataset = []    
+    augmented_labels = []
+    for idx, image in enumerate(dataset):
+        idx = labels[idx]
+        the_image = np.asarray(image)
+        
+        i = num_shifts + 1
+        #for i in range(num_shifts+1):
+        pre_image = the_image.reshape((28,28))
+
+        # shift up
+        shifted_image_up = shift(pre_image, [(i*(-1)), 0])
+        augmented_dataset.append(shifted_image_up)
+        augmented_labels.append(idx)
+        del shifted_image_up
+
+        # shift_down
+        shifted_image_down = shift(pre_image, [i, 0]) 
+        augmented_dataset.append(shifted_image_down)
+        augmented_labels.append(idx)
+        del shifted_image_down
+
+        #shift_left
+        shifted_image_left = shift(pre_image, [0, (i*(-1))]) 
+        augmented_dataset.append(shifted_image_left)
+        augmented_labels.append(idx)
+        del shifted_image_left
+
+        #shift_right
+        shifted_image_right = shift(pre_image, [0, i]) 
+        augmented_dataset.append(shifted_image_right)
+        augmented_labels.append(idx)
+        del shifted_image_right
+
+        del pre_image
+        del the_image
+    
+    return np.asarray(augmented_dataset), np.asarray(augmented_labels)
+
 ### Diagonal Augmentation
 def diagonal_augmentation(dataset, num_shifts, labels):
     augmented_dataset = []    
@@ -87,6 +128,46 @@ def diagonal_augmentation(dataset, num_shifts, labels):
             del shifted_image_diagonal_right_up
 
             del pre_image
+        del the_image
+    
+    return np.asarray(augmented_dataset), np.asarray(augmented_labels)
+
+### Single Diagonal Augmentation
+def diagonal_augmentation_single(dataset, num_shifts, labels):
+    augmented_dataset = []    
+    augmented_labels = []
+    for idx, image in enumerate(dataset):
+        idx = labels[idx]
+        the_image = np.asarray(image)
+        #for i in range(num_shifts+1):
+        i = num_shifts + 1
+        pre_image = the_image.reshape((28,28))
+
+        # shift diagonal left down
+        shifted_image_diagonal_left_down = shift(pre_image, [(i*(-1)), (i*(-1))])
+        augmented_dataset.append(shifted_image_diagonal_left_down)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_left_down
+
+        # shift diagonal right down
+        shifted_image_diagonal_right_down = shift(pre_image, [i, (i*(-1))])
+        augmented_dataset.append(shifted_image_diagonal_right_down)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_right_down
+
+        #shift diagonal left up
+        shifted_image_diagonal_left_up = shift(pre_image, [(i*(-1)), i])
+        augmented_dataset.append(shifted_image_diagonal_left_up)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_left_up
+
+        # shift diagonal right up
+        shifted_image_diagonal_right_up = shift(pre_image, [i, i])
+        augmented_dataset.append(shifted_image_diagonal_right_up)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_right_up
+
+        del pre_image
         del the_image
     
     return np.asarray(augmented_dataset), np.asarray(augmented_labels)
@@ -150,6 +231,71 @@ def combined_augmentation(dataset, num_shifts, labels):
             del shifted_image_diagonal_right_up
 
             del pre_image
+        del the_image
+    
+    return np.asarray(augmented_dataset), np.asarray(augmented_labels)
+
+### Single Combined Augmentation
+def combined_augmentation_single(dataset, num_shifts, labels):
+    augmented_dataset = []    
+    augmented_labels = []
+    for idx, image in enumerate(dataset):
+        idx = labels[idx]
+        the_image = np.asarray(image)
+        
+        i = num_shifts + 1
+       # for i in range(num_shifts+1):
+        pre_image = the_image.reshape((28,28))
+
+        # shift up
+        shifted_image_up = shift(pre_image, [(i*(-1)), 0])
+        augmented_dataset.append(shifted_image_up)
+        augmented_labels.append(idx)
+        del shifted_image_up
+
+        # shift_down
+        shifted_image_down = shift(pre_image, [i, 0]) 
+        augmented_dataset.append(shifted_image_down)
+        augmented_labels.append(idx)
+        del shifted_image_down
+
+        #shift_left
+        shifted_image_left = shift(pre_image, [0, (i*(-1))]) 
+        augmented_dataset.append(shifted_image_left)
+        augmented_labels.append(idx)
+        del shifted_image_left
+
+        #shift_right
+        shifted_image_right = shift(pre_image, [0, i]) 
+        augmented_dataset.append(shifted_image_right)
+        augmented_labels.append(idx)
+        del shifted_image_right
+
+        # shift diagonal left down
+        shifted_image_diagonal_left_down = shift(pre_image, [(i*(-1)), (i*(-1))])
+        augmented_dataset.append(shifted_image_diagonal_left_down)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_left_down
+
+        # shift diagonal right down
+        shifted_image_diagonal_right_down = shift(pre_image, [i, (i*(-1))])
+        augmented_dataset.append(shifted_image_diagonal_right_down)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_right_down
+
+        #shift diagonal left up
+        shifted_image_diagonal_left_up = shift(pre_image, [(i*(-1)), i])
+        augmented_dataset.append(shifted_image_diagonal_left_up)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_left_up
+
+        # shift diagonal right up
+        shifted_image_diagonal_right_up = shift(pre_image, [i, i])
+        augmented_dataset.append(shifted_image_diagonal_right_up)
+        augmented_labels.append(idx)
+        del shifted_image_diagonal_right_up
+
+        del pre_image
         del the_image
     
     return np.asarray(augmented_dataset), np.asarray(augmented_labels)
